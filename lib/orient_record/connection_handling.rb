@@ -1,13 +1,23 @@
 module OrientRecord
   module ConnectionHandling
     @@connection = nil
+    @@params = nil
+
+    def credentials(params)
+      if params[:database] && params[:user] && params[:password]
+        @@params = params
+      else
+        fail 'Missing some params.'
+      end
+    end
 
     def establish_connection(params = {})
-      @params = params unless params.blank?
+      credentials(params) if params.present?
+
       @@connection = Orientdb4r.client
-      @@connection.connect @params
-    rescue
-      fail "Can't connecto to OrientDB"
+      @@connection.connect @@params
+    rescue Exception => e
+      fail "Can't connect to OrientDB: #{e.message}"
     end
 
     def connection

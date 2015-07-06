@@ -25,8 +25,8 @@ module OrientRecord
       if new_record?
         class_name = self.class.name
         query = "CREATE VERTEX #{class_name}"
-        string_attributes = attributes.map { |k, v| "#{k} = '#{v}'" }.join(', ')
-        query += " SET #{string_attributes}" unless string_attributes.blank?
+        attributes_part = attributes_string(attributes)
+        query += " SET #{attributes_part}" unless attributes_part.blank?
         rows = self.class.command query
         rows ? initialize(rows.first) : false
       else
@@ -37,8 +37,8 @@ module OrientRecord
     def update(attributes = {})
       return false if new_record?
 
-      attributes_string = attributes.map { |k, v| "#{k} = '#{v}'" }.join(', ')
-      query = "UPDATE ##{id} SET #{attributes_string}"
+      attributes_part = attributes_string(attributes)
+      query = "UPDATE ##{id} SET #{attributes_part}"
 
       self.class.command query
     end
@@ -67,6 +67,10 @@ module OrientRecord
       end
 
       @changed_attributes = [] if @attributes.keys.include?('@rid')
+    end
+
+    def attributes_string(attributes)
+      attributes.map { |k, v| "#{k} = '#{v.gsub(/['"\\\x0]/,'\\\\\0')}'" }.join(', ')
     end
   end
 end
