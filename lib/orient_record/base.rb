@@ -25,20 +25,18 @@ module OrientRecord
       if new_record?
         class_name = self.class.name
         query = "CREATE VERTEX #{class_name}"
-        attributes_part = attributes_string(attributes)
-        query += " SET #{attributes_part}" unless attributes_part.blank?
-        rows = self.class.command query
-        rows ? initialize(rows.first) : false
+        query += " CONTENT #{JSON.generate(attributes)}" if attributes.any?
+
+        self.class.command query
       else
         update(attributes)
       end
     end
 
-    def update(attributes = {})
+    def update(attributes)
       return false if new_record?
 
-      attributes_part = attributes_string(attributes)
-      query = "UPDATE ##{id} SET #{attributes_part}"
+      query = "UPDATE ##{id} MERGE #{JSON.generate(attributes)}"
 
       self.class.command query
     end
@@ -47,6 +45,42 @@ module OrientRecord
       return false if new_record?
 
       self.class.command "DELETE ##{id}"
+    end
+
+    def create_out_edge(name, target)
+      fail 'Record not saved' if new_record?
+
+      target = target.id if target.respond_to?(:id)
+
+      query = "CREATE EDGE #{name} FROM ##{id} TO ##{target}"
+
+      self.class.command query
+    end
+
+    def create_in_edge(name, source)
+      fail 'Record not saved' if new_record?
+
+      source = source.id if source.respond_to?(:id)
+
+      query = "CREATE EDGE #{name} FROM ##{source} TO ##{id}"
+
+      self.class.command query
+    end
+
+    def out_edges(name = nil)
+      fail 'Record not saved' if new_record?
+
+      query = "SELECT OUT('#{name}') FROM ##{id}"
+
+      self.class.command query
+    end
+
+    def in_edges(name = nil)
+      fail 'Record not saved' if new_record?
+
+      query = "SELECT IN('#{name}') FROM ##{id}"
+
+      self.class.command query
     end
 
     private
@@ -67,10 +101,6 @@ module OrientRecord
       end
 
       @changed_attributes = [] if @attributes.keys.include?('@rid')
-    end
-
-    def attributes_string(attributes)
-      attributes.map { |k, v| "#{k} = '#{v.gsub(/['"\\\x0]/,'\\\\\0')}'" }.join(', ')
     end
   end
 end
