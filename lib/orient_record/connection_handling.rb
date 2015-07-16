@@ -21,7 +21,8 @@ module OrientRecord
     end
 
     def connection
-      establish_connection unless @@connection
+      establish_connection unless @@connection && @@connection.connected?
+
       @@connection
     end
   end
