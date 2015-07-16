@@ -20,7 +20,14 @@ module OrientRecord
     def command(q)
       start_time = Time.now
       data = connection.command q
+
+      puts
       puts "OrientDB: #{(Time.now - start_time).round(3)} #{q}"
+      puts "          #{caller[0]}"
+      puts "          #{caller[1]}"
+      puts "          #{caller[2]}"
+      puts
+
       data['result']
     end
 
@@ -34,6 +41,16 @@ module OrientRecord
       id = '#' + id if id[0] != '#'
       rows = command "SELECT FROM #{self.name} WHERE @rid = #{id}"
       rows.first ? new(rows.first) : nil
+    end
+
+    def find_or_initialize_by(*args)
+      instance = where(*args).first
+      instance || new(*args)
+    end
+
+    def find_or_create_by(*args)
+      instance = where(*args).first
+      instance || create(*args)
     end
 
     def create(*args)
@@ -53,6 +70,5 @@ module OrientRecord
     def limit(args)
       Criteria.new(self).limit(args)
     end
-
   end
 end

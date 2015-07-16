@@ -26,8 +26,14 @@ module OrientRecord
         class_name = self.class.name
         query = "CREATE VERTEX #{class_name}"
         query += " CONTENT #{JSON.generate(attributes)}" if attributes.any?
+        result = self.class.command query
 
-        self.class.command query
+        if result && result.first
+          initialize(result.first)
+          true
+        else
+          false
+        end
       else
         update(attributes)
       end
@@ -37,8 +43,14 @@ module OrientRecord
       return false if new_record?
 
       query = "UPDATE ##{id} MERGE #{JSON.generate(attributes)}"
+      result = self.class.command query
 
-      self.class.command query
+      if result && result.first
+        initialize(result.first)
+        true
+      else
+        false
+      end
     end
 
     def destroy
