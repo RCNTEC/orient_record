@@ -39,6 +39,12 @@ module OrientRecord
       end
     end
 
+    def save!
+      result = save
+      fail 'Not saved' unless result
+      result
+    end
+
     def update(attributes)
       return false if new_record?
 

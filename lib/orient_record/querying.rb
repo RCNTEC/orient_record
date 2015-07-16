@@ -59,6 +59,12 @@ module OrientRecord
       instance
     end
 
+    def create!(*args)
+      instance = new(*args)
+      fail 'Not saved' unless instance.save
+      instance
+    end
+
     def all
       Criteria.new(self).all
     end
