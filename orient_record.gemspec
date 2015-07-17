@@ -20,4 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "virtus", "~> 1.0.5"
+  spec.add_development_dependency "activemodel", "~> 4.2.3"
 end

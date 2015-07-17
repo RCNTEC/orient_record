@@ -1,32 +1,16 @@
 module OrientRecord
   module Querying
 
-    # Should be used for schema definition
-    def attributes(*args)
-      args.each do |attr_name|
-        define_method(attr_name.to_s) do
-          instance_variable_get("@#{attr_name}")
-        end
-
-        define_method("#{attr_name.to_s}=") do |value|
-          old_value = instance_variable_get("@#{attr_name}")
-          instance_variable_set("@#{attr_name}", value)
-          @changed_attributes << attr_name if old_value != value && !@changed_attributes.include?(attr_name)
-        end
-      end
-    end
-
     # Return array of objects
     def command(q)
       start_time = Time.now
       data = connection.command q
 
-      puts
       puts "OrientDB: #{(Time.now - start_time).round(3)} #{q}"
-      puts "          #{caller[0]}"
-      puts "          #{caller[1]}"
-      puts "          #{caller[2]}"
-      puts
+      # puts "          #{caller[0]}"
+      # puts "          #{caller[1]}"
+      # puts "          #{caller[2]}"
+      # puts
 
       data['result']
     end
