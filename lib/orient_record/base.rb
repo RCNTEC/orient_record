@@ -5,7 +5,7 @@ module OrientRecord
     extend ConnectionHandling
     extend Querying
 
-    attr_reader :id
+    attribute :id
 
     def initialize(attributes = {})
       super attributes
