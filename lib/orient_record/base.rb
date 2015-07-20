@@ -22,6 +22,8 @@ module OrientRecord
     end
 
     def save
+      return false unless valid?
+
       if new_record?
         class_name = self.class.name
         query = "CREATE VERTEX #{class_name}"
@@ -47,6 +49,7 @@ module OrientRecord
 
     def update(attributes)
       return false if new_record?
+      return false unless valid?
 
       query = "UPDATE ##{id} MERGE #{JSON.generate(attributes)}"
       result = self.class.command query
