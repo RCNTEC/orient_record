@@ -6,13 +6,15 @@ module OrientRecord
       start_time = Time.now
       data = connection.command q
 
-      puts "OrientDB: #{(Time.now - start_time).round(3)} #{q}"
-      # puts "          #{caller[0]}"
-      # puts "          #{caller[1]}"
-      # puts "          #{caller[2]}"
-      # puts
+      puts "OrientDB: #{sprintf('%.3f', Time.now - start_time)} #{q}"
 
       data['result']
+    rescue Exception => e
+      puts
+      puts "Query: #{q}"
+      puts
+      puts "Error: #{e.message}"
+      puts
     end
 
     # Return collection of objects

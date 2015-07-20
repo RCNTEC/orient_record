@@ -5,16 +5,14 @@ module OrientRecord
     extend ConnectionHandling
     extend Querying
 
-    attribute :id
+    attribute :id, String, writer: :private
 
     def initialize(attributes = {})
+      attributes.delete(:id)
+
       super attributes
 
-      attributes.each do |k, v|
-        if k == '@rid'
-          instance_variable_set('@id', v[1..-1])
-        end
-      end
+      self.id = attributes['@rid'][1..-1] if attributes['@rid']
     end
 
     def new_record?
