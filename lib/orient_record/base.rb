@@ -7,12 +7,20 @@ module OrientRecord
 
     attribute :id, String, writer: :private
 
-    def initialize(attributes = {})
-      attributes.delete(:id)
+    def initialize(params = {})
+      params.delete(:id)
 
-      super attributes
+      super params
 
-      self.id = attributes['@rid'][1..-1] if attributes['@rid']
+      self.id = params['@rid'][1..-1] if params['@rid']
+
+      @initial_attributes = attributes
+    end
+
+    def changed_attributes
+      attributes.select do |key, value|
+        @initial_attributes[key] != value
+      end
     end
 
     def new_record?
@@ -29,7 +37,7 @@ module OrientRecord
         result = self.class.command query
 
         if result && result.first
-          initialize(result.first)
+          initialize(attributes)
           true
         else
           false
@@ -53,7 +61,7 @@ module OrientRecord
       result = self.class.command query
 
       if result && result.first
-        initialize(result.first)
+        initialize(attributes)
         true
       else
         false
