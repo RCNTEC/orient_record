@@ -71,9 +71,16 @@ module OrientRecord
 
       target = target.id if target.respond_to?(:id)
 
-      query = "CREATE EDGE #{name} FROM ##{id} TO ##{target}"
+      field_name = "out_#{name}"
+      query = "SELECT FROM ##{id}"
+      result = self.class.command query
 
-      self.class.command query
+      unless result.first && result.first[field_name] && result.first[field_name].include?("##{target}")
+        query = "CREATE EDGE #{name} FROM ##{id} TO ##{target}"
+        self.class.command query
+      else
+        false
+      end
     end
 
     def create_in_edge(name, source)
@@ -81,9 +88,16 @@ module OrientRecord
 
       source = source.id if source.respond_to?(:id)
 
-      query = "CREATE EDGE #{name} FROM ##{source} TO ##{id}"
+      field_name = "in_#{name}"
+      query = "SELECT FROM ##{id}"
+      result = self.class.command query
 
-      self.class.command query
+      unless result.first && result.first[field_name] && result.first[field_name].include?("##{source}")
+        query = "CREATE EDGE #{name} FROM ##{source} TO ##{id}"
+        self.class.command query
+      else
+        false
+      end
     end
 
     def out_edges(name = nil)
