@@ -37,7 +37,7 @@ module OrientRecord
         result = self.class.command query
 
         if result && result.first
-          initialize(attributes)
+          initialize(result.first)
           true
         else
           false
@@ -61,7 +61,7 @@ module OrientRecord
       result = self.class.command query
 
       if result && result.first
-        initialize(attributes)
+        initialize(result.first)
         true
       else
         false

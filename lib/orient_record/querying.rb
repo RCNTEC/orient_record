@@ -6,7 +6,7 @@ module OrientRecord
       start_time = Time.now
       data = connection.command q
 
-      puts "OrientDB: #{sprintf('%.3f', Time.now - start_time)} #{q}"
+      # puts "OrientDB: #{sprintf('%.3f', Time.now - start_time)} #{q}"
 
       data['result']
     rescue Exception => e
