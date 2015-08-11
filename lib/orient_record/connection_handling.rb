@@ -16,8 +16,8 @@ module OrientRecord
 
       @@connection = Orientdb4r.client
       @@connection.connect @@params
-    rescue Exception => e
-      fail "Can't connect to OrientDB: #{e.message}"
+    rescue StandardError => e
+      raise "Can't connect to OrientDB: #{e.message}"
     end
 
     def connection

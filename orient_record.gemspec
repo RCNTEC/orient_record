@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = OrientRecord::VERSION
   spec.authors       = ["RCNTEC"]
   spec.email         = ["github@rcntec.com"]
-  spec.summary       = %q{OrientDB ORM.}
-  spec.description   = %q{OrientDB ORM for Ruby.}
+  spec.summary       = "OrientDB ORM."
+  spec.description   = "OrientDB ORM for Ruby."
   spec.homepage      = ""
   spec.license       = "Apache"
 

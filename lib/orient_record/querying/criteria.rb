@@ -40,9 +40,9 @@ module OrientRecord
       end
 
       def where(args)
-        if args.kind_of?(String)
+        if args.is_a?(String)
           criteria[:conditions] = args
-        elsif args.kind_of?(Hash)
+        elsif args.is_a?(Hash)
           criteria[:conditions].merge!(args)
         end
 
@@ -92,7 +92,7 @@ module OrientRecord
         @criteria ||= { conditions: {} }
       end
 
-      def execute(only_count = false)
+      def execute
         return unless @values.blank?
 
         q = ["SELECT FROM #{@klass.name}"]
@@ -104,9 +104,7 @@ module OrientRecord
           q << "SKIP #{skip_count}" if skip_count > 0
         end
 
-        if criteria[:limit]
-          q << "LIMIT #{criteria[:limit]}"
-        end
+        q << "LIMIT #{criteria[:limit]}" if criteria[:limit]
 
         @values = @klass.query q.join(' ')
         @count = @values.size
@@ -115,9 +113,9 @@ module OrientRecord
       def where_conditions
         q = []
 
-        if criteria[:conditions].kind_of?(String) && criteria[:conditions].length > 0
+        if criteria[:conditions].is_a?(String) && criteria[:conditions].length > 0
           q << "WHERE #{criteria[:conditions]}"
-        elsif criteria[:conditions].kind_of?(Hash) && criteria[:conditions].size > 0
+        elsif criteria[:conditions].is_a?(Hash) && criteria[:conditions].size > 0
           q << "WHERE #{criteria[:conditions].map { |field, value| "#{field} = '#{value}'" }.join(' AND ')}"
         end
 

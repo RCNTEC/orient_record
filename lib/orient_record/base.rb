@@ -83,11 +83,11 @@ module OrientRecord
       query = "SELECT FROM ##{id}"
       result = self.class.command query
 
-      unless result.first && result.first[field_name] && result.first[field_name].include?("##{target}")
+      if result.first && result.first[field_name] && result.first[field_name].include?("##{target}")
+        false
+      else
         query = "CREATE EDGE #{name} FROM ##{id} TO ##{target}"
         self.class.command query
-      else
-        false
       end
     end
 
@@ -100,11 +100,11 @@ module OrientRecord
       query = "SELECT FROM ##{id}"
       result = self.class.command query
 
-      unless result.first && result.first[field_name] && result.first[field_name].include?("##{source}")
+      if result.first && result.first[field_name] && result.first[field_name].include?("##{source}")
+        false
+      else
         query = "CREATE EDGE #{name} FROM ##{source} TO ##{id}"
         self.class.command query
-      else
-        false
       end
     end
 

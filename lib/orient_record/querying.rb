@@ -1,6 +1,5 @@
 module OrientRecord
   module Querying
-
     # Return array of objects
     def command(q)
       start_time = Time.now
@@ -9,7 +8,7 @@ module OrientRecord
       puts "OrientDB: #{sprintf('%.3f', Time.now - start_time)} #{q}"
 
       data['result']
-    rescue Exception => e
+    rescue StandardError => e
       puts
       puts "Query: #{q}"
       puts
@@ -25,7 +24,7 @@ module OrientRecord
 
     def find(id)
       id = '#' + id if id[0] != '#'
-      rows = command "SELECT FROM #{self.name} WHERE @rid = #{id}"
+      rows = command "SELECT FROM #{name} WHERE @rid = #{id}"
       rows.first ? new(rows.first) : nil
     end
 
